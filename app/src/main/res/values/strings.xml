@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">PictureWidget</string>
+    <string name="chooser_string">Select Image(s)</string>
+    <string name="config_interval">Please select refresh interval.\n0 second is manually refresh by click the widget.</string>
+    <string name="config_ok">OK</string>
+    <string name="config_img">Please select image(s) for the widget.(Max 127)\nYou need to allow permissions.</string>
+    <string name="config_miss">Please select image(s)</string>
+    <string name="select_picture_cnt">%1$d image(s) selected.</string>
+    <string name="not_select_picture">You haven\'t picked Image(s)</string>
+    <string name="need_permissions">Please allow permissions.</string>
+    <string name="share_text">Select the application</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-8039042765632689/6427884852</string>
+    <string name="config_select">Select</string>
+    <string name="config_add">Add</string>
+    <string name="config_delete">Delete</string>
+    <string name="error">Error!! Please restart or reinstall the application.</string>
+    <string name="no_load_image">There is(are) missing image(s) due to the authority problem</string>
+    <string name="max_load_image">Max image count is 127. Please check this.</string>
+</resources>
