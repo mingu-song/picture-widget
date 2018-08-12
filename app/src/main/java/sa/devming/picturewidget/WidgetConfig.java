@@ -17,6 +17,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -31,7 +32,6 @@ public class WidgetConfig extends AppCompatActivity {
     private static final int SELECT_IMAGE = 2;
     private static final int ADD_IMAGE = 3;
     public static final String WIDGET_ID_PARAM = "WIDGET_ID";
-    private final String READ_PERMISSION = android.Manifest.permission.READ_EXTERNAL_STORAGE;
     private final int MAX_COUNT = 127;
 
     private int mAppWidgetId;
@@ -58,10 +58,8 @@ public class WidgetConfig extends AppCompatActivity {
         initializeViews();
         //광고 추가
         adMob();
-        //권한 체크
-        if (Build.VERSION.SDK_INT >= 23) {
-            checkAllowPermissions();
-        }
+        // 권한확인
+        checkAllowPermissions();
     }
 
     @Override
@@ -100,21 +98,21 @@ public class WidgetConfig extends AppCompatActivity {
             mImageList = mDBHelper.getAllPictureDate(mAppWidgetIdUpdate);
         }
 
-        mConfigSelectImg = (TextView)findViewById(R.id.configSelectImg);
-        mConfigOK = (ImageButton) findViewById(R.id.configOK);
+        mConfigSelectImg = findViewById(R.id.configSelectImg);
+        mConfigOK =  findViewById(R.id.configOK);
         mConfigOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 configFinish();
             }
         });
-        mGridView = (GridView)findViewById(R.id.gridView);
+        mGridView = findViewById(R.id.gridView);
         mImageAdapter = new ImageAdapter(this);
         mGridView.setAdapter(mImageAdapter);
 
-        mSelBT = (ImageButton)findViewById(R.id.configSelBT);
-        mAddBT = (ImageButton)findViewById(R.id.configAddBT);
-        mDelBT = (ImageButton)findViewById(R.id.configDelBT);
+        mSelBT = findViewById(R.id.configSelBT);
+        mAddBT = findViewById(R.id.configAddBT);
+        mDelBT = findViewById(R.id.configDelBT);
 
         mSelBT.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,6 +167,27 @@ public class WidgetConfig extends AppCompatActivity {
         intentFinish.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
         setResult(RESULT_OK, intentFinish);
         finish();
+    }
+
+    private void checkAllowPermissions() {
+        if (PermissionUtil.checkPermissions(this, PermissionUtil.PERMISSIONS[0])) {
+            // 권한획득
+        } else {
+            PermissionUtil.requestExternalPermissions(this);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PermissionUtil.REQUEST_CODE) {
+            if (PermissionUtil.verifyPermission(grantResults)) {
+                // 권한획득
+            } else {
+                Toast.makeText(this, getString(R.string.need_permissions), Toast.LENGTH_LONG).show();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     private void getImageList(int action) {
@@ -270,35 +289,13 @@ public class WidgetConfig extends AppCompatActivity {
         }
     }
 
-    private void checkAllowPermissions() {
-        //권한이 없는 경우
-        if (ContextCompat.checkSelfPermission(this, READ_PERMISSION) != PackageManager.PERMISSION_GRANTED){
-            //최초 거부를 선택하면 두번째부터 이벤트 발생 & 권한 획득이 필요한 이유를 설명
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, READ_PERMISSION)) {
-                Toast.makeText(this, getString(R.string.need_permissions), Toast.LENGTH_LONG).show();
-            }
-            //요청 팝업 팝업 선택시 onRequestPermissionsResult 이동
-            ActivityCompat.requestPermissions(this, new String[]{READ_PERMISSION}, PERMISSION_OK);
-        }
-        //권한이 있는 경우
-        else{
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == PERMISSION_OK) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            }
-            //권한이 없는 경우
-            else {
-            }
-        }
-    }
-
     private void adMob(){
-        AdView mAdView = (AdView)findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
+        AdView mAdView = findViewById(R.id.adView);
+        Bundle extras = new Bundle();
+        extras.putString("max_ad_content_rating", "G");
+        AdRequest adRequest = new AdRequest.Builder()
+                .addNetworkExtrasBundle(AdMobAdapter.class, extras)
+                .build();
         mAdView.loadAd(adRequest);
     }
 }
