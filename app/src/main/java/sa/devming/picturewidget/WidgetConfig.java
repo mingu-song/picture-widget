@@ -28,11 +28,11 @@ import sa.devming.picturewidget.database.PictureDbHelper;
 
 public class WidgetConfig extends AppCompatActivity {
     private static final String TAG = WidgetConfig.class.getSimpleName();
-    private static final int PERMISSION_OK = 1;
+    //private static final int PERMISSION_OK = 1;
     private static final int SELECT_IMAGE = 2;
     private static final int ADD_IMAGE = 3;
     public static final String WIDGET_ID_PARAM = "WIDGET_ID";
-    private final int MAX_COUNT = 127;
+    private final int MAX_COUNT = 100;
 
     private int mAppWidgetId;
     private int mAppWidgetIdUpdate;
@@ -226,7 +226,7 @@ public class WidgetConfig extends AppCompatActivity {
                 if (data.getData() != null) {
                     Uri uri = Uri.parse(data.getData().toString());
                     try {
-                        //기존저장 이미지 개수 + 현재 개수 + 1 = 127 이상인지 확인
+                        //기존저장 이미지 개수 + 현재 개수 + 1 = 100 이상인지 확인
                         if (mDBHelper.getAllCount(mAppWidgetIdUpdate) + mImageList.size() + 1 > MAX_COUNT) {
                             Toast.makeText(this, getString(R.string.max_load_image), Toast.LENGTH_LONG).show();
                             return;
@@ -240,7 +240,7 @@ public class WidgetConfig extends AppCompatActivity {
                 } else {
                     if (data.getClipData() != null) {
                         ClipData clipData = data.getClipData();
-                        //기존저장 이미지 개수 + 현재 개수 + clipData.getItemCount() = 127 이상인지 확인
+                        //기존저장 이미지 개수 + 현재 개수 + clipData.getItemCount() = 100 이상인지 확인
                         if (mDBHelper.getAllCount(mAppWidgetIdUpdate) + mImageList.size() + clipData.getItemCount() > MAX_COUNT) {
                             Toast.makeText(this, getString(R.string.max_load_image), Toast.LENGTH_LONG).show();
                             return;
@@ -295,6 +295,7 @@ public class WidgetConfig extends AppCompatActivity {
         extras.putString("max_ad_content_rating", "G");
         AdRequest adRequest = new AdRequest.Builder()
                 .addNetworkExtrasBundle(AdMobAdapter.class, extras)
+                .tagForChildDirectedTreatment(true)
                 .build();
         mAdView.loadAd(adRequest);
     }
