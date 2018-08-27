@@ -1,0 +1,197 @@
+{
+  "project_info": {
+    "project_number": "358104736796",
+    "firebase_url": "https://oddeven9-362a0.firebaseio.com",
+    "project_id": "oddeven9-362a0",
+    "storage_bucket": "oddeven9-362a0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358104736796:android:d1badf6ab4e149fe",
+        "android_client_info": {
+          "package_name": "sa.devming.notepadwidget"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "358104736796-np04ci12denqd164oe6b6q7jf9734jgm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnVLOZL_EIg4zIrrUie9hhQVuEnej7fvQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358104736796:android:6e2e40bcfbe2a364",
+        "android_client_info": {
+          "package_name": "sa.devming.picturewidget"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "358104736796-np04ci12denqd164oe6b6q7jf9734jgm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnVLOZL_EIg4zIrrUie9hhQVuEnej7fvQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358104736796:android:d92bf5281c7d5590",
+        "android_client_info": {
+          "package_name": "sa.devming.realestate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "358104736796-np04ci12denqd164oe6b6q7jf9734jgm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnVLOZL_EIg4zIrrUie9hhQVuEnej7fvQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358104736796:android:ae65bfe79b757e4b",
+        "android_client_info": {
+          "package_name": "sa.devming.realrank"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "358104736796-np04ci12denqd164oe6b6q7jf9734jgm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnVLOZL_EIg4zIrrUie9hhQVuEnej7fvQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358104736796:android:ce9fc8e9240bc88c",
+        "android_client_info": {
+          "package_name": "sa.devming.todaywork"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "358104736796-np04ci12denqd164oe6b6q7jf9734jgm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnVLOZL_EIg4zIrrUie9hhQVuEnej7fvQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358104736796:android:df84a5a92fa98d6c",
+        "android_client_info": {
+          "package_name": "sa.devming.trendplay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "358104736796-np04ci12denqd164oe6b6q7jf9734jgm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnVLOZL_EIg4zIrrUie9hhQVuEnej7fvQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
