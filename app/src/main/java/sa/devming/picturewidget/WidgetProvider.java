@@ -16,9 +16,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.UserHandle;
-import android.provider.*;
 import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.os.EnvironmentCompat;
 import android.util.Log;
@@ -29,16 +28,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.jar.Manifest;
 
 import sa.devming.picturewidget.database.PictureData;
 import sa.devming.picturewidget.database.PictureDbHelper;
 
 public class WidgetProvider extends AppWidgetProvider {
     private static final String TAG = WidgetProvider.class.getSimpleName();
-    public final static String ACTION_CLICK = "sa.devming.picturewidget.ACTION_CLICK";
     public final static String SHARE_CLICK = "sa.devming.picturewidget.SHARE_CLICK";
     public final static String BACK_CLICK = "sa.devming.picturewidget.BACK_CLICK";
     public final static int IMAGE_SIZE = 800;
@@ -80,17 +76,17 @@ public class WidgetProvider extends AppWidgetProvider {
             mDBHelper.updateLoadPictureData(pictureData);
         }
 
+        //클릭 이벤트
+        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, context, WidgetProvider.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[] {appWidgetId});
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        updateViews.setOnClickPendingIntent(R.id.widget_picture, pendingIntent);
+
         //뒤로가기 이벤트
-        Intent back = new Intent(WidgetProvider.BACK_CLICK);
+        Intent back = new Intent(WidgetProvider.BACK_CLICK, null, context, WidgetProvider.class);
         back.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         PendingIntent pendingIntentB = PendingIntent.getBroadcast(context, appWidgetId, back, PendingIntent.FLAG_CANCEL_CURRENT);
         updateViews.setOnClickPendingIntent(R.id.widget_back, pendingIntentB);
-
-        //클릭 이벤트
-        Intent intent = new Intent(WidgetProvider.ACTION_CLICK);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, appWidgetId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        updateViews.setOnClickPendingIntent(R.id.widget_picture, pendingIntent);
 
         //open folder 이벤트
         if (pictureData != null) {
@@ -119,22 +115,16 @@ public class WidgetProvider extends AppWidgetProvider {
         Intent share2 = Intent.createChooser(share, context.getString(R.string.share_text));
         PendingIntent pendingIntentS = PendingIntent.getActivity(context, appWidgetId, share2, PendingIntent.FLAG_CANCEL_CURRENT);
         updateViews.setOnClickPendingIntent(R.id.widget_share, pendingIntentS);*/
-        Intent share = new Intent(WidgetProvider.SHARE_CLICK);
+        Intent share = new Intent(WidgetProvider.SHARE_CLICK, null, context, WidgetProvider.class);
         share.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         PendingIntent pendingIntentS = PendingIntent.getBroadcast(context, appWidgetId, share, PendingIntent.FLAG_CANCEL_CURRENT);
         updateViews.setOnClickPendingIntent(R.id.widget_share, pendingIntentS);
 
         //setting 이벤트
         Intent setting = new Intent(context, WidgetConfig.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt(WidgetConfig.WIDGET_ID_PARAM, appWidgetId);
-        setting.putExtras(bundle);
+        setting.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         PendingIntent pendingIntentT = PendingIntent.getActivity(context, appWidgetId, setting, PendingIntent.FLAG_CANCEL_CURRENT);
         updateViews.setOnClickPendingIntent(R.id.widget_setting, pendingIntentT);
-        /*Intent setting = new Intent(WidgetProvider.SETTING_CLICK);
-        setting.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-        PendingIntent pendingIntentT = PendingIntent.getBroadcast(context, (appWidgetId*-10), setting, PendingIntent.FLAG_CANCEL_CURRENT);
-        updateViews.setOnClickPendingIntent(R.id.widget_setting, pendingIntentT);*/
 
         appWidgetManager.updateAppWidget(appWidgetId, updateViews);
     }
@@ -142,14 +132,9 @@ public class WidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        if (ACTION_CLICK.equalsIgnoreCase(action)) {
-            Intent update = new Intent(context, WidgetProvider.class);
-            update.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-            Bundle bundle = intent.getExtras();
-            int ids[] = {bundle.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID)};
-            update.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-            context.sendBroadcast(update);
-        } else if (SHARE_CLICK.equalsIgnoreCase(action)) {
+        //Toast.makeText(context, "action = " + action, Toast.LENGTH_LONG).show();
+
+        if (SHARE_CLICK.equalsIgnoreCase(action)) {
             Bundle bundle = intent.getExtras();
             int widgetId = bundle.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
             if (mDBHelper == null) {
@@ -162,6 +147,7 @@ public class WidgetProvider extends AppWidgetProvider {
             Intent chooser = Intent.createChooser(share, context.getString(R.string.share_text));
             chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             context.startActivity(chooser);
+
         } else if (BACK_CLICK.equalsIgnoreCase(action)) {
             // Y로 처리된 마지막 사진을 N으로 업데이트를 두번
             Bundle bundle = intent.getExtras();
@@ -182,10 +168,8 @@ public class WidgetProvider extends AppWidgetProvider {
             }
 
             // 위젯 업데이트
-            Intent update = new Intent(context, WidgetProvider.class);
-            update.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-            int ids[] = {widgetId};
-            update.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+            Intent update = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, context, WidgetProvider.class);
+            update.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[] {widgetId});
             context.sendBroadcast(update);
         } else {
             super.onReceive(context, intent);

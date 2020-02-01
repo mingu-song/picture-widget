@@ -3,17 +3,13 @@ package sa.devming.picturewidget;
 import android.appwidget.AppWidgetManager;
 import android.content.ClipData;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,11 +27,11 @@ public class WidgetConfig extends AppCompatActivity {
     //private static final int PERMISSION_OK = 1;
     private static final int SELECT_IMAGE = 2;
     private static final int ADD_IMAGE = 3;
-    public static final String WIDGET_ID_PARAM = "WIDGET_ID";
+    //public static final String WIDGET_ID_PARAM = "WIDGET_ID";
     private final int MAX_COUNT = 100;
 
     private int mAppWidgetId;
-    private int mAppWidgetIdUpdate;
+    //private int mAppWidgetIdUpdate;
 
     private TextView mConfigSelectImg;
 
@@ -49,6 +45,8 @@ public class WidgetConfig extends AppCompatActivity {
     private GridView mGridView;
 
     private ImageButton mAddBT, mSelBT, mDelBT;
+
+    private boolean isNew = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,20 +81,23 @@ public class WidgetConfig extends AppCompatActivity {
         mDBHelper = new PictureDbHelper(this);
         mImageList = new ArrayList();
         mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-        mAppWidgetIdUpdate = AppWidgetManager.INVALID_APPWIDGET_ID;
+        //mAppWidgetIdUpdate = AppWidgetManager.INVALID_APPWIDGET_ID;
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             mAppWidgetId = bundle.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-            mAppWidgetIdUpdate = bundle.getInt(WIDGET_ID_PARAM, AppWidgetManager.INVALID_APPWIDGET_ID);
+            //mAppWidgetIdUpdate = bundle.getInt(WIDGET_ID_PARAM, AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
-        if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID && mAppWidgetIdUpdate == AppWidgetManager.INVALID_APPWIDGET_ID) {
+        if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID /*&& mAppWidgetIdUpdate == AppWidgetManager.INVALID_APPWIDGET_ID*/) {
             finish();
-        } else if (mAppWidgetIdUpdate != AppWidgetManager.INVALID_APPWIDGET_ID) {
+        } else /*if (mAppWidgetIdUpdate != AppWidgetManager.INVALID_APPWIDGET_ID)*/ {
             //업데이트를 위한 조회
-            mImageList = mDBHelper.getAllPictureDate(mAppWidgetIdUpdate);
+            //mImageList = mDBHelper.getAllPictureDate(mAppWidgetIdUpdate);
+            mImageList = mDBHelper.getAllPictureDate(mAppWidgetId);
         }
+
+        isNew = mImageList.isEmpty(); // 아무것도 없다면 신규위젯으로판단
 
         mConfigSelectImg = findViewById(R.id.configSelectImg);
         mConfigOK =  findViewById(R.id.configOK);
@@ -135,7 +136,7 @@ public class WidgetConfig extends AppCompatActivity {
         mAddBT.setEnabled(false);
         mDelBT.setEnabled(false);
 
-        if (mAppWidgetIdUpdate != AppWidgetManager.INVALID_APPWIDGET_ID) {
+        if (mAppWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
             setTextAndAlarm();
         }
     }
@@ -147,9 +148,8 @@ public class WidgetConfig extends AppCompatActivity {
         }
 
         //업데이트라면 기존 데이터 삭제 처리 (취소를 위하여 여기서 처리)
-        if (mAppWidgetIdUpdate != AppWidgetManager.INVALID_APPWIDGET_ID) {
-            mDBHelper.deletePictureData(mAppWidgetIdUpdate);
-            mAppWidgetId = mAppWidgetIdUpdate; // 이후는 기존 변수 사용
+        if (!isNew) {
+            mDBHelper.deletePictureData(mAppWidgetId);
         }
 
         //DB에 저장
@@ -159,8 +159,8 @@ public class WidgetConfig extends AppCompatActivity {
         }
 
         //위젯 업데이트 처리
-        Intent intent = new Intent(WidgetProvider.ACTION_CLICK);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+        Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, this, WidgetProvider.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[] {mAppWidgetId});
         sendBroadcast(intent);
 
         Intent intentFinish = new Intent();
@@ -227,7 +227,7 @@ public class WidgetConfig extends AppCompatActivity {
                     Uri uri = Uri.parse(data.getData().toString());
                     try {
                         //기존저장 이미지 개수 + 현재 개수 + 1 = 100 이상인지 확인
-                        if (mDBHelper.getAllCount(mAppWidgetIdUpdate) + mImageList.size() + 1 > MAX_COUNT) {
+                        if (mDBHelper.getAllCount(mAppWidgetId) + mImageList.size() + 1 > MAX_COUNT) {
                             Toast.makeText(this, getString(R.string.max_load_image), Toast.LENGTH_LONG).show();
                             return;
                         }
@@ -241,7 +241,7 @@ public class WidgetConfig extends AppCompatActivity {
                     if (data.getClipData() != null) {
                         ClipData clipData = data.getClipData();
                         //기존저장 이미지 개수 + 현재 개수 + clipData.getItemCount() = 100 이상인지 확인
-                        if (mDBHelper.getAllCount(mAppWidgetIdUpdate) + mImageList.size() + clipData.getItemCount() > MAX_COUNT) {
+                        if (mDBHelper.getAllCount(mAppWidgetId) + mImageList.size() + clipData.getItemCount() > MAX_COUNT) {
                             Toast.makeText(this, getString(R.string.max_load_image), Toast.LENGTH_LONG).show();
                             return;
                         }
@@ -295,7 +295,6 @@ public class WidgetConfig extends AppCompatActivity {
         extras.putString("max_ad_content_rating", "G");
         AdRequest adRequest = new AdRequest.Builder()
                 .addNetworkExtrasBundle(AdMobAdapter.class, extras)
-                .tagForChildDirectedTreatment(true)
                 .build();
         mAdView.loadAd(adRequest);
     }

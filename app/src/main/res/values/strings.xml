@@ -10,6 +10,7 @@
     <string name="need_permissions">Please allow permissions.</string>
     <string name="share_text">Select the application</string>
     <string name="banner_ad_unit_id" translatable="false">ca-app-pub-8039042765632689/6427884852</string>
+    <string name="admob_app_id" translatable="false">ca-app-pub-8039042765632689~4951151654</string>
     <string name="config_select">Select</string>
     <string name="config_add">Add</string>
     <string name="config_delete">Delete</string>
